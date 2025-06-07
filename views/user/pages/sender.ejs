@@ -1,21 +1,19 @@
 <script src="/socket.io/socket.io.js"></script>
-<div class="container mt-3 " >
-  <h2>Sender Device</h2> 
- <div>Receivers Online: <span id="count">0</span></div> 
+<div class="container mt-3 invisible">
+  <h2>Sender Device</h2>
+  <div>Receivers Online: <span id="count">0</span></div>
 
-  <div id="buttons-section" class="mt-3 invisible"></div>
-
+  <div id="buttons-section" class="mt-3"></div>
 </div>
 
 <script>
-  window.addEventListener('volumeButtonPressed', function(event) {
-  	var buttonType = event.detail.buttonType;
-    if(buttonType == 'VOLUME_UP'){    	
-    	$('.send_click').eq(0).click();
-    } else{
-    	$('.send_click').eq(1).click();
+  window.addEventListener("volumeButtonPressed", function (event) {
+    var buttonType = event.detail.buttonType;
+    if (buttonType == "VOLUME_UP") {
+      $(".send_click").eq(0).click();
+    } else {
+      $(".send_click").eq(1).click();
     }
-  	
   });
 
   const token = "<%= token %>"; // Replace with actual token

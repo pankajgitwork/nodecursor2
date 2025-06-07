@@ -10,7 +10,7 @@ import bcrypt from 'bcrypt';
 class UserController {
 	async listdata(req, res) {
 
-		let column = [  //column to select database columns
+		let column=[  //column to select database columns
 			{
 				'db': 'name', // column name in database
 				'dt': 'name', //column name in datatable
@@ -29,8 +29,8 @@ class UserController {
 				'db': 'id',
 				'dt': 'action',
 				'formatter': function (data, rowData) {    //optional
-					let html = '';
-					html += `<div class="dropdown">
+					let html='';
+					html+=`<div class="dropdown">
                   <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
                       aria-expanded="false">
                       Action
@@ -42,16 +42,30 @@ class UserController {
               </div>`;
 					return html;
 				}
+			},
+			{
+				'db': 'status',
+				'dt': 'status',
+				'formatter': function (data, rowData) {    //optional
+					let html='';
+					html+=`<div class="form-group">
+								<div class="custom-control custom-switch">
+									<input type="checkbox" class="custom-control-input status-toggle" ${(rowData.status=='0')? '':'checked'} data-user='${rowData.id}' id="customSwitch1">
+									<label class="custom-control-label" for="customSwitch1"></label>
+								</div>
+							</div>`;
+					return html;
+				}
 			}
 		];
-		let result = await (SSP.getData(req, 'select * from users', column)).mysql(mysqlConn); // mysqlConn is mysql connection instance
+		let result=await (SSP.getData(req, 'select * from users', column)).mysql(mysqlConn); // mysqlConn is mysql connection instance
 		res.status(200).json(result);
 
 	}
 
 	async generateLinkModal(req, res) {
-		const { id } = req.params;
-		let html = await view('admin/pages/user/dynamic-section/generate-link-modal', { id: id });
+		const { id }=req.params;
+		let html=await view('admin/pages/user/dynamic-section/generate-link-modal', { id: id });
 		return res.status(200).json({
 			message: 'Modal generated successfully',
 			html: html
@@ -59,39 +73,39 @@ class UserController {
 	}
 
 	async generateLink(req, res) {
-		const { id } = req.params;
-		const { from, to, generate_new } = req.body;
+		const { id }=req.params;
+		const { from, to, generate_new }=req.body;
 
 
 		/* ========== Check Existing Link ========== */
-		const existingLink = await LinkModel.findOne({
+		const existingLink=await LinkModel.findOne({
 			where: { user_id: id }
 		});
 		/* ========== Check Existing Link End ========== */
 
 
-		if (!existingLink || generate_new == '1') {
-			if (from == '') {
+		if (!existingLink||generate_new=='1') {
+			if (from=='') {
 				return res.status(200).json({ status: 'error', msg: 'From date is required' });
 			}
-			if (to == '') {
+			if (to=='') {
 				return res.status(200).json({ status: 'error', msg: 'To date is required' });
 			}
 		}
 
-		let final_token = '';
-		let baseurl = getBaseUrl(req);
+		let final_token='';
+		let baseurl=getBaseUrl(req);
 
 
 		if (!existingLink) {
 
-			const payload = {
+			const payload={
 				id: id,
 				expiry_from: from,
 				expiry_to: to,
 			};
 
-			let token = jwt.sign(payload, process.env.LINK_JWT_SECRET);
+			let token=jwt.sign(payload, process.env.LINK_JWT_SECRET);
 
 			await LinkModel.create({
 				user_id: id,
@@ -100,33 +114,33 @@ class UserController {
 				expiry_to: to
 			});
 
-			final_token = token
+			final_token=token
 
 		} else {
-			if (generate_new == '1') {
+			if (generate_new=='1') {
 
-				const payload = {
+				const payload={
 					id: id,
 					expiry_from: from,
 					expiry_to: to,
 				};
 
-				let token = jwt.sign(payload, process.env.LINK_JWT_SECRET);
+				let token=jwt.sign(payload, process.env.LINK_JWT_SECRET);
 
 				await LinkModel.update({
 					token: token,
 					expiry_from: from,
 					expiry_to: to
 				}, { where: { user_id: id } });
-				
-				final_token = token;
+
+				final_token=token;
 
 			} else {
-				final_token = existingLink.token;
+				final_token=existingLink.token;
 			}
 		}
 
-		let full_url = `${baseurl}/user/receiver/${final_token}`;
+		let full_url=`${baseurl}/user/receiver/${final_token}`;
 
 		return res.status(200).json({
 			status: 'success',
@@ -136,23 +150,23 @@ class UserController {
 	}
 
 	async userSave(req, res) {
-		const { name, email, password } = req.body;
+		const { name, email, password }=req.body;
 
-		if (!name || name == '') {
+		if (!name||name=='') {
 			return res.status(200).json({
 				status: 'error',
 				msg: 'Enter Name'
 			});
 		}
 
-		if (!email || email == '') {
+		if (!email||email=='') {
 			return res.status(200).json({
 				status: 'error',
 				msg: 'Enter Email'
 			});
 		}
 
-		if (!password || password == '') {
+		if (!password||password=='') {
 			return res.status(200).json({
 				status: 'error',
 				msg: 'Enter Password'
@@ -160,9 +174,9 @@ class UserController {
 		}
 
 
-		let passHash = await bcrypt.hash(password, 10);
+		let passHash=await bcrypt.hash(password, 10);
 
-		let status = await UserModel.create({
+		let status=await UserModel.create({
 			name: name,
 			email: email,
 			password: passHash,
@@ -175,6 +189,32 @@ class UserController {
 				msg: 'User Added'
 			});
 		}
+	}
+
+	async update_status(req, res) {
+		const { user_id, status }=req.body;
+
+		if (!user_id||user_id=='') {
+			return res.status(200).json({
+				status: 'error',
+				msg: 'User ID is required'
+			});
+		}
+
+		let result=await UserModel.update({ status: status }, { where: { id: user_id } });
+
+		if (result) {
+			return res.status(200).json({
+				status: 'success',
+				msg: 'Status updated successfully'
+			});
+		} else {
+			return res.status(200).json({
+				status: 'error',
+				msg: 'Failed to update status'
+			});
+		}
+
 	}
 }
 

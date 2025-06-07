@@ -4,6 +4,6 @@
         "*.log"
     ],
     "events": {
-        "start": "clear"
+        "start": "cls"
     }
 }

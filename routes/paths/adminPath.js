@@ -23,6 +23,9 @@ export const adminPath=
     userSave: {
         routePath: prefix+'/user/save'
     },
+    userUpdateStatus: {
+        routePath: prefix+'/user/update_status',
+    },
     genearteLinkModal: {
         routePath: prefix+'/generatelink_modal/:id',
         setParam(params={}) {

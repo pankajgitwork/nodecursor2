@@ -19,16 +19,16 @@ class UserController {
 
     async senderLoginAttempt(req, res) {
 
-        const { email, password, deviceId } = req.body;
+        const { email, password, deviceId }=req.body;
 
-        if (!email || !password) {
+        if (!email||!password) {
             return res.status(200).json({
                 status: "error",
                 msg: 'Invalid email or password'
             });
         }
 
-        const user = await UserModel.findOne({
+        const user=await UserModel.findOne({
             where: { email },
             include: [
                 { model: UserDevice, as: 'devices' },
@@ -43,7 +43,7 @@ class UserController {
             });
         }
 
-        const match = await bcrypt.compare(password, user.password);
+        const match=await bcrypt.compare(password, user.password);
 
         if (!match) {
             return res.status(200).json({
@@ -52,8 +52,8 @@ class UserController {
             });
         }
 
-        req.session.user = user;
-        req.session.cookie.maxAge = 10 * 365 * 24 * 60 * 60 * 1000; // in ms
+        req.session.user=user;
+        req.session.cookie.maxAge=10*365*24*60*60*1000; // in ms
 
         req.session.save(async (err) => {
             if (err) {
@@ -62,23 +62,23 @@ class UserController {
 
             return res.status(200).json({
                 status: 'success',
-                link: getBaseUrl(req) + userPath.sender.routePath
+                link: getBaseUrl(req)+userPath.sender.routePath
             });
         });
     }
 
     async receiverLoginAttempt(req, res) {
 
-        const { email, password, deviceId } = req.body;
+        const { email, password, deviceId }=req.body;
 
-        if (!email || !password) {
+        if (!email||!password) {
             return res.status(200).json({
                 status: "error",
                 msg: 'Invalid email or password'
             });
         }
 
-        const user = await UserModel.findOne({
+        const user=await UserModel.findOne({
             where: { email },
             include: [
                 { model: UserDevice, as: 'devices' },
@@ -93,7 +93,7 @@ class UserController {
             });
         }
 
-        const match = await bcrypt.compare(password, user.password);
+        const match=await bcrypt.compare(password, user.password);
 
         if (!match) {
             return res.status(200).json({
@@ -102,11 +102,11 @@ class UserController {
             });
         }
 
-        const devices = user.devices.map(d => d.device_id);
+        const devices=user.devices.map(d => d.device_id);
 
         if (!devices.includes(deviceId)) {
 
-            if (devices.length >= 2) {
+            if (devices.length>=2) {
                 return res.status(200).json({
                     status: "error",
                     msg: 'Maximum of 2 devices already registered.'
@@ -116,9 +116,9 @@ class UserController {
             await UserDevice.create({ user_id: user.id, device_id: deviceId });
         }
 
-        req.session.user = user;
-        req.session.cookie.maxAge = 10 * 365 * 24 * 60 * 60 * 1000; // in ms
-        req.session.isFirstLogin = true;
+        req.session.user=user;
+        req.session.cookie.maxAge=10*365*24*60*60*1000; // in ms
+        req.session.isFirstLogin=true;
         req.session.save(async (err) => {
             if (err) {
                 return next(err);
@@ -133,18 +133,18 @@ class UserController {
 
     async senderPage(req, res) {
 
-        let link = await LinkModel.findOne({
+        let link=await LinkModel.findOne({
             where: { user_id: req.session.user.id },
         });
 
-        const token = link.token ?? null;
+        const token=link.token??null;
 
         if (!token) {
             return res.render('user/pages/404', { title: 'Token Not Found', pageTitle: 'Token Not Found' });
         }
 
         try {
-            const decoded = decodeJWT(token);
+            const decoded=decodeJWT(token);
 
             if (!decoded) {
                 delete req.session.user;
@@ -154,11 +154,11 @@ class UserController {
 
             dayjs.extend(isBetween);
 
-            let expiry_from = dayjs(decoded.expiry_from);
-            let expiry_to = dayjs(decoded.expiry_to);
-            const now = dayjs();
+            let expiry_from=dayjs(decoded.expiry_from);
+            let expiry_to=dayjs(decoded.expiry_to);
+            const now=dayjs();
 
-            if (req.session.user.id != decoded.id) {
+            if (req.session.user.id!=decoded.id) {
                 delete req.session.user;
                 req.session.save(err => { });
                 return res.render('user/pages/404', { title: 'Page Not Found' });
@@ -168,6 +168,14 @@ class UserController {
                 delete req.session.user;
                 req.session.save(err => { });
                 return res.render('user/pages/404', { title: 'Token Expired', pageTitle: 'Token Expired' });
+            }
+
+            let user_id=req.session.user.id
+            let user=await UserModel.findByPk(user_id);
+            if (user.status=='0') {
+                delete req.session.user;
+                req.session.save(err => { });
+                return res.render('user/pages/404', { title: 'Contact Admin' });
             }
 
             return res.render('user/pages/sender', { token, title: 'Sender' });
@@ -178,12 +186,11 @@ class UserController {
         }
     }
 
-    receiverPage(req, res) {
-        const token = req.params.token;
+    async receiverPage(req, res) {
+        const token=req.params.token;
 
         try {
-            const decoded = decodeJWT(token);
-            console.log(decoded);
+            const decoded=decodeJWT(token);
 
             if (!decoded) {
                 delete req.session.user;
@@ -193,11 +200,11 @@ class UserController {
 
             dayjs.extend(isBetween);
 
-            let expiry_from = dayjs(decoded.expiry_from);
-            let expiry_to = dayjs(decoded.expiry_to);
-            const now = dayjs();
+            let expiry_from=dayjs(decoded.expiry_from);
+            let expiry_to=dayjs(decoded.expiry_to);
+            const now=dayjs();
 
-            if (req.session.user.id != decoded.id) {
+            if (req.session.user.id!=decoded.id) {
                 delete req.session.user;
                 req.session.save(err => { });
                 return res.render('user/pages/404', { title: 'Page Not Found' });
@@ -209,11 +216,19 @@ class UserController {
                 return res.render('user/pages/404', { title: 'Token Expired', pageTitle: 'Token Expired' });
             }
 
-            let firstLogin = req.session.isFirstLogin ?? false;
+            let firstLogin=req.session.isFirstLogin??false;
 
             delete req.session.isFirstLogin;
 
             req.session.save();
+
+            let user_id=req.session.user.id
+            let user=await UserModel.findByPk(user_id);
+            if (user.status=='0') {
+                delete req.session.user;
+                req.session.save(err => { });
+                return res.render('user/pages/404', { title: 'Contact Admin' });
+            }
 
             return res.render('user/pages/receiver', { token, title: 'Receiver', firstLogin });
 

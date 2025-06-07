@@ -40,4 +40,6 @@ router.post(adminPath.userGenerateLink.routePath, upload.none(), UserController.
 
 router.get(adminPath.genearteLinkModal.routePath, UserController.generateLinkModal);
 
+router.post(adminPath.userUpdateStatus.routePath, upload.none(), UserController.update_status);
+
 export default router;

@@ -21,6 +21,10 @@ const UserModel = sequelize.define('users', {
   password_raw: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  status: {
+    type: DataTypes.STRING,
+
   }
 }, {
   tableName: 'users',
