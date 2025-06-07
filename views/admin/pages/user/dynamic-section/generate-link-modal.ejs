@@ -1,0 +1,54 @@
+<!-- Bootstrap 4 Modal -->
+<div class="modal fade" id="link-modal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form action="<%= adminPath.userGenerateLink.setParam({ id: id }) %>" class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalLabel">Link</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="">From</label>
+                    <input type="text" name="from" id="from" class="form-control datetimepicker-input" readonly data-toggle="datetimepicker">
+                </div>
+                <div class="mb-3">
+                    <label for="">To</label>
+                    <input type="text" name="to" id="to" class="form-control datetimepicker-input" readonly data-toggle="datetimepicker">
+                </div>
+
+                <div class="mb-3">
+                    <label for="">Receiver Link</label>
+                    <div class="input-group">
+                        <input type="text" readonly class="form-control" id="link-field">
+                        <button class="btn btn-outline-primary copy-btn" data-clipboard-target="#link-field" type="button">Copy</button>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div>
+                        <label>Generate New</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="generate_new" id="generate_new_no" value="0" checked>
+                        <label class="form-check-label" for="generate_new_no">No</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="generate_new" id="generate_new_yes" value="1">
+                        <label class="form-check-label" for="generate_new_yes">Yes</label>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary generate_link">
+                    Generate Link
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

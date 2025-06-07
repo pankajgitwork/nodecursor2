@@ -1,0 +1,34 @@
+<script src="/socket.io/socket.io.js"></script>
+
+<div class="conatiner text-center mt-4">
+  <h2 class="fw-bold">Receiver Page</h2>
+</div>
+
+
+<script>
+  const firstLogin = "<%= firstLogin %>";
+
+  console.log(firstLogin);
+  
+  if (firstLogin === "true") {
+    const deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
+    localStorage.setItem("deviceId", deviceId);
+    const token = "<%= token %>";
+    const role = "receiver";
+
+    window.addEventListener("DOMContentLoaded", () => {
+      window.postMessage(
+        {
+          toExtension: true,
+          command: "login",
+          data: {
+            token: token,
+            deviceId: deviceId,
+            role: role,
+          },
+        },
+        "*"
+      );
+    });
+  }
+</script>

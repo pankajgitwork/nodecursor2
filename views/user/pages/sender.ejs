@@ -1,0 +1,61 @@
+<script src="/socket.io/socket.io.js"></script>
+<div class="container mt-3 " >
+  <h2>Sender Device</h2> 
+ <div>Receivers Online: <span id="count">0</span></div> 
+
+  <div id="buttons-section" class="mt-3 invisible"></div>
+
+</div>
+
+<script>
+  window.addEventListener('volumeButtonPressed', function(event) {
+  	var buttonType = event.detail.buttonType;
+    if(buttonType == 'VOLUME_UP'){    	
+    	$('.send_click').eq(0).click();
+    } else{
+    	$('.send_click').eq(1).click();
+    }
+  	
+  });
+
+  const token = "<%= token %>"; // Replace with actual token
+  const role = "sender";
+
+  const socket = io({
+    query: { token, role },
+  });
+
+  // Show receiver buttons
+  socket.on("receiver-count", ({ count, deviceIds }) => {
+    const uniqueDeviceIds = deviceIds.filter(
+      (id, idx, arr) => arr.indexOf(id) === idx
+    );
+
+    document.getElementById("count").innerText = uniqueDeviceIds.length;
+
+    let buttonHtml = "";
+
+    uniqueDeviceIds.forEach((receiverDeviceId, index) => {
+      buttonHtml += `
+        <button type="button"
+                class="btn btn-primary mx-2 send_click"
+                data-device="${receiverDeviceId}">
+          Send Click to ${index + 1}
+        </button>`;
+    });
+
+    document.getElementById("buttons-section").innerHTML = buttonHtml;
+  });
+
+  // Send command to selected receiver
+  $(document).on("click", ".send_click", function (e) {
+    e.preventDefault();
+    let targetDeviceId = $(this).data("device");
+
+    socket.emit("send-command", {
+      token,
+      deviceId: targetDeviceId,
+      command: "click-button",
+    });
+  });
+</script>

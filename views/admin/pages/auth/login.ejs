@@ -1,0 +1,87 @@
+<div class="login-logo">
+    <a href="javascript:void(0);"><b>Login</b></a>
+</div>
+<!-- /.login-logo -->
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Sign in to start your session</p>
+
+        <form action="<%= routes.loginAttempt.routePath %>" method="post">
+            <div class="input-group mb-3">
+                <input name="email" type="email" class="form-control" placeholder="Email">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input name="password" type="password" class="form-control" placeholder="Password">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <!-- /.col -->
+                <div class="col-12">
+                    <button type="button" id="sign-in" class="btn btn-primary btn-block">Sign In</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+
+    </div>
+    <!-- /.login-card-body -->
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('body').on('click', '#sign-in', function (e) {
+            e.preventDefault();
+            var btn_ele = $(this);
+            var btn_text = $(btn_ele).html();
+            var formEle = $(btn_ele).closest('form');
+            var formdata = new FormData(formEle[0]);
+            $.ajax({
+                url: $(formEle).attr('action'),
+                data: formdata,
+                type: "post",
+                contentType: false,
+                processData: false,
+                cache: false,
+                dataType: 'json',
+                beforeSend: function () {
+                    $(btn_ele).attr('disabled', true);
+                    $(btn_ele).html("Please Wait...");
+                },
+                success: function (r) {
+                    if (r.status == 'success') {
+
+                        location.href = r.link;
+                    } else {
+                        swal({
+                            icon: r.status,
+                            title: r.msg,
+                        })
+                    }
+                    return false;
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    swal({
+                        icon: 'error',
+                        title: 'Something Went Wrong',
+                    })
+                },
+                complete: function () {
+                    $(btn_ele).attr('disabled', false);
+                    $(btn_ele).html(btn_text);
+                }
+            })
+        });
+    })
+</script>

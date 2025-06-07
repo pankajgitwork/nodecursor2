@@ -1,0 +1,9 @@
+{
+    "ignore": [
+        "sessions/*",
+        "*.log"
+    ],
+    "events": {
+        "start": "clear"
+    }
+}
