@@ -16,6 +16,14 @@ export const userPath =
         routePath: prefix + '/receiver/login/attempt'
     },
 
+    receiverLogout: {
+        routePath: prefix + '/receiver/logout'
+    },
+    
+    senderLogout: {
+        routePath: prefix + '/sender/logout'
+    },
+
     sender: {
         routePath: prefix + '/sender/dashboard'
     },

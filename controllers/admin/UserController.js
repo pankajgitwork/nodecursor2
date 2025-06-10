@@ -50,8 +50,8 @@ class UserController {
 					let html='';
 					html+=`<div class="form-group">
 								<div class="custom-control custom-switch">
-									<input type="checkbox" class="custom-control-input status-toggle" ${(rowData.status=='0')? '':'checked'} data-user='${rowData.id}' id="customSwitch1">
-									<label class="custom-control-label" for="customSwitch1"></label>
+									<input type="checkbox" class="custom-control-input status-toggle" ${(rowData.status=='0')? '':'checked'} data-user='${rowData.id}' id="${rowData.id}">
+									<label class="custom-control-label" for="${rowData.id}"></label>
 								</div>
 							</div>`;
 					return html;

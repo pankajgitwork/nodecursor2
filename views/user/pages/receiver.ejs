@@ -1,16 +1,19 @@
 <script src="/socket.io/socket.io.js"></script>
 
-
+<div class="container-fluid">
+  <div class="d-flex justify-content-end mt-2">
+    <a href="<%= routes.receiverLogout.routePath %>">Logout</a>
+  </div>
+</div>
 <div class="conatiner text-center mt-4">
   <h2 class="fw-bold">Receiver Page</h2>
 </div>
-
 
 <script>
   const firstLogin = "<%= firstLogin %>";
 
   console.log(firstLogin);
-  
+
   if (firstLogin === "true") {
     const deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
     localStorage.setItem("deviceId", deviceId);

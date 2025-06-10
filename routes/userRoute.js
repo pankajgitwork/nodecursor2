@@ -15,6 +15,9 @@ router.use((req, res, next) => {
     next();
 });
 
+router.get(userPath.receiverLogout.routePath, UserController.receiverLogout);
+router.get(userPath.senderLogout.routePath, UserController.senderLogout);
+
 router.get(userPath.senderLogin.routePath, UserController.senderLoginPage);
 router.post(userPath.senderLoginAttempt.routePath, upload.none(), UserController.senderLoginAttempt);
 
@@ -26,7 +29,6 @@ router.post(userPath.receiverLoginAttempt.routePath, upload.none(), UserControll
 router.get(userPath.sender.routePath, userAuth({ role: 'sender' }), UserController.senderPage);
 router.get(userPath.receiver.routePath, userAuth({ role: 'receiver' }), UserController.receiverPage);
 
-// add more user routes here...
-// e.g. router.get('/about', …)
+
 
 export default router;

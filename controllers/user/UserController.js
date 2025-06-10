@@ -238,6 +238,31 @@ class UserController {
             return res.render('user/pages/404', { title: 'Page Not Found' });
         }
     }
+
+    async receiverLogout(req, res) {
+        
+        delete req.session.user;
+        req.session.save(err => {
+            if (err) {
+                console.error('Error saving session:', err);
+            }
+        });
+        
+        return res.redirect(userPath.receiverLogin.routePath);    
+    }
+
+    async senderLogout(req, res) {
+        if (req.session.user) {
+            delete req.session.user;
+            req.session.save(err => {
+                if (err) {
+                    console.error('Error saving session:', err);
+                }
+            });
+        }
+
+        return res.redirect(userPath.senderLogin.routePath);    
+    }
 }
 
 export default new UserController();

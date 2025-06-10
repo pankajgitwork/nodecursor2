@@ -1,152 +1,176 @@
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+  crossorigin="anonymous"
+></script>
 <style>
-    .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-    }
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
 
-    @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-            font-size: 3.5rem;
-        }
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
     }
+  }
 
-    html,
-    body {
-        height: 100%;
-    }
+  html,
+  body {
+    height: 100%;
+  }
 
-    body {
-        display: flex;
-        align-items: center;
-        padding-top: 40px;
-        padding-bottom: 40px;
-        background-color: #f5f5f5;
-        text-align: center;
-    }
+  body {
+    display: flex;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #f5f5f5;
+    text-align: center;
+  }
 
-    .form-signin {
-        width: 100%;
-        max-width: 330px;
-        padding: 15px;
-        margin: auto;
-    }
+  .form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+  }
 
-    .form-signin .checkbox {
-        font-weight: 400;
-    }
+  .form-signin .checkbox {
+    font-weight: 400;
+  }
 
-    .form-signin .form-floating:focus-within {
-        z-index: 2;
-    }
+  .form-signin .form-floating:focus-within {
+    z-index: 2;
+  }
 
-    .form-signin input[type="email"] {
-        margin-bottom: -1px;
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
-    }
+  .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
 
-    .form-signin input[type="password"] {
-        margin-bottom: 10px;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-    }
+  .form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
 </style>
 
 <main class="form-signin">
-    <form action="/user/receiver/login/attempt" method="post">
+  <form action="/user/receiver/login/attempt" method="post">
+    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
-        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+    <div class="form-floating">
+      <input
+        type="email"
+        name="email"
+        class="form-control"
+        id="floatingInput"
+        placeholder="name@example.com"
+      />
+      <label for="floatingInput">DOB</label>
+    </div>
+    <div class="form-floating">
+      <input
+        type="password"
+        name="password"
+        class="form-control"
+        id="floatingPassword"
+        placeholder="Password"
+      />
+      <label for="floatingPassword">Time</label>
+    </div>
 
-        <div class="form-floating">
-            <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-            <label for="floatingInput">Email address</label>
-        </div>
-        <div class="form-floating">
-            <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
-            <label for="floatingPassword">Password</label>
-        </div>
+    <button class="w-100 btn btn-lg btn-primary" id="login" type="button">
+      Sign in
+    </button>
 
-
-        <button class="w-100 btn btn-lg btn-primary" id="login" type="button">Sign in</button>
-
-        <br><br>
-        <div>
-            <p class="text-danger fw-bold">First, download the extension if haven't already.</p>
-            <div class="d-flex justify-content-between">
-                <a class="btn btn-info" href="/extension/394a3838f23040c6af45-1.0.xpi">Firefox Extension</a>
-                <a class="btn btn-info" href="/extension/fastclick_chrome.zip" download="">Chrome Extension</a>
-            </div>
-        </div>
-
-    </form>
+    <br /><br />
+    <div>
+      <p class="text-danger fw-bold">
+        First, download the extension if haven't already.
+      </p>
+      <div class="d-flex justify-content-between">
+        <a class="btn btn-info" href="/extension/394a3838f23040c6af45-1.0.xpi"
+          >Firefox Extension</a
+        >
+        <a
+          class="btn btn-info"
+          href="/extension/fastclick_chrome.zip"
+          download=""
+          >Chrome Extension</a
+        >
+      </div>
+    </div>
+  </form>
 </main>
 
 <script>
-    function setDeviceId() {
-        let deviceId = localStorage.getItem('deviceId');
+  function setDeviceId() {
+    let deviceId = localStorage.getItem("deviceId");
 
-        if (!deviceId) {
-            // modern browsers support crypto.randomUUID()
-            if (typeof crypto.randomUUID === 'function') {
-                deviceId = crypto.randomUUID();
-            } else {
-                // fallback: simple random string
-                deviceId = 'dev-' + Math.random().toString(36).substr(2, 9);
-            }
-            localStorage.setItem('deviceId', deviceId);
-        }
-
-        return deviceId;
+    if (!deviceId) {
+      // modern browsers support crypto.randomUUID()
+      if (typeof crypto.randomUUID === "function") {
+        deviceId = crypto.randomUUID();
+      } else {
+        // fallback: simple random string
+        deviceId = "dev-" + Math.random().toString(36).substr(2, 9);
+      }
+      localStorage.setItem("deviceId", deviceId);
     }
 
-    $(document).ready(function() {
-        $('body').on('click', '#login', function(e) {
-            e.preventDefault();
-            const btn_ele = $(this);
-            const btn_text = $(btn_ele).html();
-            const formEle = $(btn_ele).closest('form');
-            const formdata = new FormData(formEle[0]);
-            formdata.append('deviceId', setDeviceId());
-            $.ajax({
-                url: $(formEle).attr('action'),
-                data: formdata,
-                type: "post",
-                contentType: false,
-                processData: false,
-                cache: false,
-                dataType: 'json',
-                beforeSend: function() {
-                    $(btn_ele).attr('disabled', true);
-                    $(btn_ele).html("Please Wait...");
-                },
-                success: function(r) {
-                    if (r.status == 'success') {
-                        location.href = r.link;
-                    } else {
-                        swal({
-                            icon: r.status,
-                            title: r.msg,
-                        })
-                    }
-                    return false;
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    swal({
-                        icon: 'error',
-                        title: 'Something Went Wrong',
-                    })
-                    return false;
-                },
-                complete: function() {
-                    $(btn_ele).attr('disabled', false);
-                    $(btn_ele).html(btn_text);
-                    return false;
-                }
-            })
-        });
-    })
+    return deviceId;
+  }
+
+  $(document).ready(function () {
+
+    $("body").on("click", "#login", function (e) {
+      e.preventDefault();
+      const btn_ele = $(this);
+      const btn_text = $(btn_ele).html();
+      const formEle = $(btn_ele).closest("form");
+      const formdata = new FormData(formEle[0]);
+      formdata.append("deviceId", setDeviceId());
+      $.ajax({
+        url: $(formEle).attr("action"),
+        data: formdata,
+        type: "post",
+        contentType: false,
+        processData: false,
+        cache: false,
+        dataType: "json",
+        beforeSend: function () {
+          $(btn_ele).attr("disabled", true);
+          $(btn_ele).html("Please Wait...");
+        },
+        success: function (r) {
+          if (r.status == "success") {
+            location.href = r.link;
+          } else {
+            swal({
+              icon: r.status,
+              title: r.msg,
+            });
+          }
+          return false;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          swal({
+            icon: "error",
+            title: "Something Went Wrong",
+          });
+          return false;
+        },
+        complete: function () {
+          $(btn_ele).attr("disabled", false);
+          $(btn_ele).html(btn_text);
+          return false;
+        },
+      });
+    });
+  });
 </script>
