@@ -45,5 +45,27 @@ export const adminPath=
             }
             return path;
         }
+    },
+
+    changePassword: {
+        routePath: prefix+'/change_password',
+        setParam(params={}) {
+            let path=this.routePath;
+            for (const [key, value] of Object.entries(params)) {
+                path=path.replace(`:${key}`, value);
+            }
+            return path;
+        }
+    },
+
+    changePasswordAttempt: {
+        routePath: prefix+'/change_password/attempt',
+        setParam(params={}) {
+            let path=this.routePath;
+            for (const [key, value] of Object.entries(params)) {
+                path=path.replace(`:${key}`, value);
+            }
+            return path;
+        }
     }
 }

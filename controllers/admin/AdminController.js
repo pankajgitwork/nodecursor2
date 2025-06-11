@@ -9,7 +9,7 @@ import { adminPath } from '../../routes/paths/adminPath.js';
 class AdminController {
   async listdata(req, res) {
 
-    let column = [  //column to select database columns
+    let column=[  //column to select database columns
       {
         'db': 'name', // column name in database
         'dt': 'name', //column name in datatable
@@ -28,8 +28,8 @@ class AdminController {
         'db': 'id',
         'dt': 'action',
         'formatter': function (data, rowData) {    //optional
-          let html = '';
-          html += `<div class="dropdown">
+          let html='';
+          html+=`<div class="dropdown">
                   <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
                       aria-expanded="false">
                       Action
@@ -43,29 +43,29 @@ class AdminController {
         }
       }
     ];
-    let result = await (SSP.getData(req, 'select * from users', column)).mysql(mysqlConn); // mysqlConn is mysql connection instance
+    let result=await (SSP.getData(req, 'select * from users', column)).mysql(mysqlConn); // mysqlConn is mysql connection instance
     res.status(200).json(result);
 
   }
 
   async generateLink(req, res) {
-    const { id, role } = req.params;
+    const { id, role }=req.params;
 
-    const user = await sequelize.query('SELECT * FROM users WHERE id = ?', {
+    const user=await sequelize.query('SELECT * FROM users WHERE id = ?', {
       replacements: [id],
       type: sequelize.QueryTypes.SELECT
     });
 
-    const payload = {
+    const payload={
       id: id
     };
 
-    let token = jwt.sign(payload, process.env.LINK_JWT_SECRET);
+    let token=jwt.sign(payload, process.env.LINK_JWT_SECRET);
 
-    if (user.length > 0) {
-      const now = new Date();
+    if (user.length>0) {
+      const now=new Date();
       // Check if a link already exists for this user
-      const existingLink = await sequelize.query(
+      const existingLink=await sequelize.query(
         'SELECT * FROM links WHERE user_id = ?',
         {
           replacements: [id],
@@ -73,7 +73,7 @@ class AdminController {
         }
       );
 
-      if (existingLink.length === 0) {
+      if (existingLink.length===0) {
         await sequelize.query(
           'INSERT INTO links (user_id, token, createdAt, updatedAt) VALUES (?, ?, ?, ?)',
           {
@@ -83,13 +83,13 @@ class AdminController {
         );
       }
 
-      let full_url = '';
-      let baseurl = getBaseUrl(req);
+      let full_url='';
+      let baseurl=getBaseUrl(req);
 
-      if (existingLink.length === 0) {
-        full_url = `${baseurl}/user/sender/${token}`;
+      if (existingLink.length===0) {
+        full_url=`${baseurl}/user/sender/${token}`;
       } else {
-        full_url = `${baseurl}/user/receiver/${existingLink[0].token}`;
+        full_url=`${baseurl}/user/receiver/${existingLink[0].token}`;
       }
 
       res.status(200).json({
@@ -102,7 +102,7 @@ class AdminController {
   }
 
   userList(req, res) {
-    let userListRoute = adminPath.userListDatatable.routePath;
+    let userListRoute=adminPath.userListDatatable.routePath;
     return res.render('admin/pages/user/list', { userListRoute: userListRoute });
   }
 
@@ -122,17 +122,63 @@ class AdminController {
     });
   }
 
-  async loginAttempt(req, res) {
-    const { email, password } = req.body;
+  async changePassword(req, res) {
+    return res.render('admin/pages/change_password');
+  }
 
-    if (!email || !password) {
+  async changePasswordAttempt(req, res) {
+    const { new_password, confirm_password }=req.body;
+    if (!new_password) {
+      return res.status(200).json({
+        status: "error",
+        msg: 'Enter Password'
+      });
+    }
+
+    if (!confirm_password) {
+      return res.status(200).json({
+        status: "error",
+        msg: 'Enter Confirm Password'
+      });
+    }
+
+    if (new_password!==confirm_password) {
+      return res.status(200).json({
+        status: "error",
+        msg: 'Password and Confirm Password do not match'
+      });
+    }
+
+    const admin_id=req.session.admin.id;
+    const hashedPassword=await bcrypt.hash(new_password, 10);
+
+    let result=await AdminModel.update({ password: hashedPassword }, { where: { id: admin_id } });
+
+    if (result) {
+      return res.status(200).json({
+        status: 'success',
+        msg: 'password changed successfully'
+      });
+    }
+
+    return res.status(200).json({
+      status: 'error',
+      msg: 'Failed to change password'
+    });
+
+  }
+
+  async loginAttempt(req, res) {
+    const { email, password }=req.body;
+
+    if (!email||!password) {
       return res.status(200).json({
         status: "error",
         msg: 'Invalid email or password'
       });
     }
 
-    const admin = await AdminModel.findOne({
+    const admin=await AdminModel.findOne({
       where: { email }
     });
 
@@ -143,7 +189,7 @@ class AdminController {
       });
     }
 
-    const match = await bcrypt.compare(password, admin.password);
+    const match=await bcrypt.compare(password, admin.password);
 
     if (!match) {
       return res.status(200).json({
@@ -152,8 +198,8 @@ class AdminController {
       });
     }
 
-    req.session.admin = admin;
-    req.session.cookie.maxAge = 10 * 365 * 24 * 60 * 60 * 1000; // in ms
+    req.session.admin=admin;
+    req.session.cookie.maxAge=10*365*24*60*60*1000; // in ms
 
     req.session.save(async (err) => {
       if (err) {

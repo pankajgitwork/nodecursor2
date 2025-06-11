@@ -5,15 +5,15 @@ import adminAuth from '../middleware/adminAuth.js';
 import multer from 'multer';
 import { adminPath } from './paths/adminPath.js';
 
-const router = express.Router();
-const upload = multer();
+const router=express.Router();
+const upload=multer();
 
 /* router.use((req, res, next) => {
     res.locals.layout = 'admin/pages/layout/layout';
     next();
 }); */
 
-const props = {
+const props={
     auth: {
         layout: 'admin/pages/layout/layout'
     },
@@ -41,5 +41,9 @@ router.post(adminPath.userGenerateLink.routePath, upload.none(), UserController.
 router.get(adminPath.genearteLinkModal.routePath, UserController.generateLinkModal);
 
 router.post(adminPath.userUpdateStatus.routePath, upload.none(), UserController.update_status);
+
+router.get(adminPath.changePassword.routePath, adminAuth({ props: props, userType: 'auth' }), AdminController.changePassword);
+router.post(adminPath.changePasswordAttempt.routePath, adminAuth({ props: props, userType: 'auth' }), upload.none(), AdminController.changePasswordAttempt);
+
 
 export default router;
